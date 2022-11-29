@@ -1,0 +1,34 @@
+---
+ansible_connection: winrm
+ansible_port: 5985
+ansible_winrm_kerberos_delegation: true
+ansible_winrm_scheme: http
+ansible_winrm_server_cert_validation: false
+ansible_winrm_transport: kerberos
+
+########################################################################
+# Production Domain Credentials
+ansible_user_prd: "ServiceID"
+ansible_pass_prd: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  235-87235097235-0872350-87235-0872359823590834545235087235
+  8345987235908723567187456871249876124897612489712897612487
+  1298124908124098124908612409861240986124907612409761240976
+  1249812498712498712498723471259872345987124987129871245983
+  12984712498712498712498712498712571257125981259821
+
+########################################################################
+# Development Domain Credentials
+ansible_user_dev: "ServiceID"
+ansible_pass_dev: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  235-87235097235-0872350-87235-0872359823590834545235087235
+  8345987235908723567187456871249876124897612489712897612487
+  1298124908124098124908612409861240986124907612409761240976
+  1249812498712498712498723471259872345987124987129871245983
+  12984712498712498712498712498712571257125981259821
+
+########################################################################
+# Select correct credentials based on server domain (Requires FQDN)
+ansible_user: "{{ lookup('vars', 'ansible_user_' + inventory_hostname.split('.')[1]) | lower }}"
+ansible_password: "{{ lookup('vars', 'ansible_pass_' + inventory_hostname.split('.')[1]) | lower }}"

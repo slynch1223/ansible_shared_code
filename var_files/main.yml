@@ -1,0 +1,60 @@
+---
+########################################################################
+automation_id: "ServiceID"
+automation_pass: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  235-87235097235-0872350-87235-0872359823590834545235087235
+  8345987235908723567187456871249876124897612489712897612487
+  1298124908124098124908612409861240986124907612409761240976
+  1249812498712498712498723471259872345987124987129871245983
+  12984712498712498712498712498712571257125981259821
+
+########################################################################
+git_url: "github.com"
+github_token: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  235-87235097235-0872350-87235-0872359823590834545235087235
+  8345987235908723567187456871249876124897612489712897612487
+  1298124908124098124908612409861240986124907612409761240976
+  1249812498712498712498723471259872345987124987129871245983
+  12984712498712498712498712498712571257125981259821
+
+########################################################################
+# Production ServiceNow Config
+snow_url_prd: "https://mycompany.service-now.com"
+snow_user_prd: "ServiceID"
+snow_pass_prd: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  235-87235097235-0872350-87235-0872359823590834545235087235
+  8345987235908723567187456871249876124897612489712897612487
+  1298124908124098124908612409861240986124907612409761240976
+  1249812498712498712498723471259872345987124987129871245983
+  12984712498712498712498712498712571257125981259821
+
+# Development ServiceNow Config
+snow_url_dev: "https://dev-mycompany.service-now.com"
+snow_user_dev: "ServiceID"
+snow_pass_dev: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  235-87235097235-0872350-87235-0872359823590834545235087235
+  8345987235908723567187456871249876124897612489712897612487
+  1298124908124098124908612409861240986124907612409761240976
+  1249812498712498712498723471259872345987124987129871245983
+  12984712498712498712498712498712571257125981259821
+
+# Select proper config based on current environment
+serviceNow_url: "{% if tower_job_template is defined %}{{ lookup('vars', 'snow_url_prd') }}{% else %}{{ lookup('vars', 'snow_url_dev') }}{% endif %}"
+serviceNow_user: "{% if tower_job_template is defined %}{{ lookup('vars', 'snow_user_prd') }}{% else %}{{ lookup('vars', 'snow_user_dev') }}{% endif %}"
+serviceNow_pass: "{% if tower_job_template is defined %}{{ lookup('vars', 'snow_pass_prd') }}{% else %}{{ lookup('vars', 'snow_pass_dev') }}{% endif %}"
+
+########################################################################
+# Disable able no_log when testing locally
+nolog: "{% if tower_job_template is defined %}True{% else %}False{% endif %}"
+
+########################################################################
+# Variables used to store message for final job output
+errors: []
+output:
+  - "Job Template Name: {{ tower_job_template_name | default() }}"
+  - "Submitted By: {{ tower_user_name | default() }}"
+  - "Submitted By Email: {{ tower_user_email | default() }}"
